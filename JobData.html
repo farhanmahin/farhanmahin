@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="bn" data-page="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সার্টিফিকেট স্টাইল চাকরি পরীক্ষার তথ্য ডেটা কার্ড জেনারেটর</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { sans: ['Hind Siliguri', 'sans-serif'] },
+    colors: { gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' } }
+  } }
+}
+</script>
+<style>
+body { font-family: 'Hind Siliguri', sans-serif; background-color: #0f172a; color: #f8fafc; }
+.card-certificate-4-3 {
+  width: 100%; max-width: 720px; aspect-ratio: 4 / 3; background: #ffffff; color: #0f172a; position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.5);
+}
+.certificate-border { border: 8px solid #1e293b; }
+.certificate-border::after { content: ""; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border: 2px solid #d97706; pointer-events: none; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+/* Card dark theme */
+#cardPreview.card-dark { background:#0f172a; color:#f1f5f9; border-color:#475569; }
+#cardPreview.card-dark .text-slate-900 { color:#f8fafc; }
+#cardPreview.card-dark .text-slate-700 { color:#cbd5e1; }
+#cardPreview.card-dark .text-slate-600, #cardPreview.card-dark .text-slate-500 { color:#94a3b8; }
+#cardPreview.card-dark .bg-slate-50 { background:#1e293b; }
+#cardPreview.card-dark .bg-white { background:#1e293b; }
+#cardPreview.card-dark .border-slate-900 { border-color:#64748b; }
+#cardPreview.card-dark .border-slate-300, #cardPreview.card-dark .border-slate-200 { border-color:#334155; }
+#cardPreview.card-dark .text-amber-700, #cardPreview.card-dark .text-amber-600 { color:#fbbf24; }
+#cardPreview.card-dark .text-emerald-700, #cardPreview.card-dark .text-emerald-800 { color:#34d399; }
+#cardPreview.card-dark .text-emerald-900 { color:#6ee7b7; }
+#cardPreview.card-dark .text-sky-700, #cardPreview.card-dark .text-sky-800 { color:#38bdf8; }
+#cardPreview.card-dark .text-sky-900 { color:#7dd3fc; }
+#cardPreview.card-dark .text-purple-900 { color:#d8b4fe; }
+#cardPreview.card-dark .text-blue-700 { color:#60a5fa; }
+#cardPreview.card-dark .bg-emerald-50\/60 { background:rgba(16,185,129,.12); }
+#cardPreview.card-dark .bg-sky-50\/60 { background:rgba(14,165,233,.12); }
+#cardPreview.card-dark .bg-purple-50\/60 { background:rgba(168,85,247,.14); }
+#cardPreview.card-dark .border-emerald-200 { border-color:rgba(52,211,153,.4); }
+#cardPreview.card-dark .border-sky-200 { border-color:rgba(56,189,248,.4); }
+#cardPreview.card-dark .border-purple-200 { border-color:rgba(192,132,252,.4); }
+#cardPreview.card-dark .border-emerald-100, #cardPreview.card-dark .border-sky-100, #cardPreview.card-dark .border-purple-100 { border-color:#334155; }
+
+/* Page light theme */
+html[data-page="light"] body { background:#f1f5f9; color:#0f172a; }
+html[data-page="light"] .bg-slate-900, html[data-page="light"] .bg-slate-900\/90 { background:#ffffff; }
+html[data-page="light"] .bg-slate-950 { background:#e2e8f0; }
+html[data-page="light"] .bg-slate-800\/50 { background:#f8fafc; }
+html[data-page="light"] .border-slate-800, html[data-page="light"] .border-slate-700, html[data-page="light"] .border-slate-700\/50 { border-color:#cbd5e1; }
+html[data-page="light"] .text-white { color:#0f172a; }
+html[data-page="light"] .text-slate-300 { color:#334155; }
+html[data-page="light"] .text-slate-400 { color:#64748b; }
+html[data-page="light"] .text-amber-400, html[data-page="light"] .text-amber-300 { color:#b45309; }
+html[data-page="light"] .text-emerald-400 { color:#047857; }
+html[data-page="light"] .text-sky-400 { color:#0369a1; }
+html[data-page="light"] .text-purple-400 { color:#7e22ce; }
+html[data-page="light"] .text-rose-400 { color:#be123c; }
+</style>
+</head>
+<body class="min-h-screen pb-12 text-slate-100">
+
+<header class="bg-slate-900 border-b border-slate-800 py-3 px-4 shadow-md">
+<div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+<div>
+<h1 class="text-lg sm:text-xl font-bold text-amber-400">চাকরি পরীক্ষার সার্টিফিকেট ডেটা কার্ড জেনারেটর</h1>
+<p class="text-xs text-slate-400">তথ্য দিন এবং ৪:৩ অনুপাতের প্রিমিয়াম সার্টিফিকেট ফটোকার্ড তৈরি করুন</p>
+</div>
+<div class="flex gap-2">
+<button type="button" id="pageThemeBtn" onclick="togglePageTheme()" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg transition font-medium"></button>
+<button type="button" id="cardThemeBtn" onclick="toggleCardTheme()" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg transition font-medium"></button>
+</div>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+<!-- LEFT PANEL: INPUT FORM (no inner scroll window) -->
+<div class="lg:col-span-5 bg-slate-900/90 rounded-2xl border border-slate-800 p-4 shadow-xl space-y-4">
+<h2 class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2 flex items-center gap-2">
+<i class="fa-solid fa-file-pen text-amber-400"></i>
+পরীক্ষার বিস্তারিত তথ্য ইনপুট দিন
+</h2>
+<div class="grid grid-cols-2 gap-2">
+<button type="button" onclick="loadSampleData()" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-arrows-rotate mr-1"></i> স্যাম্পল লোড করুন</button>
+<button type="button" onclick="clearAll()" class="text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-trash-can mr-1"></i> সব মুছুন</button>
+</div>
+
+<form id="examForm" class="space-y-4 text-xs" onsubmit="event.preventDefault();">
+
+<div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
+<div class="font-bold text-amber-300 text-[11px] uppercase tracking-wider">১. মৌলিক তথ্য</div>
+<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">পদের নাম</label>
+<input type="text" id="positionName" value="সহকারী পরিচালক" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white outline-none focus:border-amber-500">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">মন্ত্রণালয় / প্রতিষ্ঠান</label>
+<input type="text" id="ministryName" value="বাংলাদেশ ব্যাংক" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white outline-none focus:border-amber-500">
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">শূন্য পদ</label>
+<input type="text" id="vacancies" value="১০০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">মোট আবেদনকারী</label>
+<input type="text" id="applicants" value="১,৫০,০০০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">সার্কুলার তারিখ</label>
+<input type="date" id="circularDate" value="2024-01-15" class="w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-1.5 text-white outline-none">
+</div>
+</div>
+</div>
+
+<div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
+<div class="font-bold text-emerald-400 text-[11px] uppercase tracking-wider">২. প্রিলিমিনারি পরীক্ষা</div>
+<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">পরীক্ষার তারিখ</label>
+<input type="date" id="prelimDate" value="2024-04-10" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">ফলাফলের তারিখ</label>
+<input type="date" id="prelimResultDate" value="2024-05-02" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">মোট MCQ</label>
+<input type="text" id="prelimMarks" value="১০০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">কাটমার্ক</label>
+<input type="text" id="prelimCut" value="৬৫" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">প্রিলিতে টিকছে</label>
+<input type="text" id="prelimPassed" value="৫,০০০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+</div>
+</div>
+
+<div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
+<div class="font-bold text-sky-400 text-[11px] uppercase tracking-wider">৩. লিখিত পরীক্ষা</div>
+<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">পরীক্ষার তারিখ</label>
+<input type="date" id="writtenDate" value="2024-07-20" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">ফলাফলের তারিখ</label>
+<input type="date" id="writtenResultDate" value="2024-10-15" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">মোট মার্ক</label>
+<input type="text" id="writtenMarks" value="২০০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">কাটমার্ক</label>
+<input type="text" id="writtenCut" value="১১৮" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">লিখিততে টিকছে</label>
+<input type="text" id="writtenPassed" value="৪৫০" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+</div>
+</div>
+
+<div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
+<div class="font-bold text-purple-400 text-[11px] uppercase tracking-wider">৪. ভাইভা পরীক্ষা</div>
+<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block font-medium mb-1 text-slate-300">ভাইভা শুরু</label>
+<input type="date" id="vivaStartDate" value="2024-11-01" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+<div>
+<label class="block font-medium mb-1 text-slate-300">ভাইভা শেষ</label>
+<input type="date" id="vivaEndDate" value="2024-11-20" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-white outline-none">
+</div>
+</div>
+</div>
+
+</form>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="lg:col-span-7 flex flex-col items-center justify-start space-y-4">
+
+<div class="w-full bg-slate-950 p-2 sm:p-4 rounded-2xl border border-slate-800 flex justify-center items-center overflow-hidden">
+
+<div id="cardPreview" class="card-certificate-4-3 certificate-border p-4 sm:p-5 flex flex-col justify-between select-none">
+
+<div class="border-b-2 border-slate-900 pb-2 text-center relative">
+<div class="text-[11px] uppercase tracking-widest text-amber-700 font-bold">চাকরি পরীক্ষার তথ্য বিবরণী ডেটা কার্ড</div>
+<h2 id="cardPositionTitle" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight mt-0.5">সহকারী পরিচালক</h2>
+<div id="cardMinistryBadge" class="text-sm font-bold text-slate-700 mt-0.5">বাংলাদেশ ব্যাংক</div>
+
+<div class="grid grid-cols-3 gap-2 mt-3 pt-2 border-t border-slate-200 text-left bg-slate-50 p-1.5 rounded">
+<div>
+<span class="block text-[10px] text-slate-500 leading-none">সার্কুলার তারিখ</span>
+<strong id="cardCircularDate" class="text-[11px] text-slate-900">১৫ জানুয়ারি, ২০২৪</strong>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-slate-500 leading-none">মোট শূন্য পদ</span>
+<strong id="cardVacancies" class="text-[11px] text-emerald-700 font-extrabold">১০০ টি</strong>
+</div>
+<div class="text-right">
+<span class="block text-[10px] text-slate-500 leading-none">মোট আবেদনকারী</span>
+<strong id="cardApplicants" class="text-[11px] text-blue-700 font-extrabold">১,৫০,০০০ জন</strong>
+</div>
+</div>
+</div>
+
+<!-- 3 columns: all info centered, label on top, value below -->
+<div class="grid grid-cols-3 gap-2 my-auto py-1">
+
+<!-- PRELIMINARY -->
+<div class="bg-emerald-50/60 border border-emerald-200 rounded-lg p-2 flex flex-col justify-between text-center">
+<div>
+<div class="text-[11px] font-bold text-emerald-900 border-b border-emerald-200 pb-1 text-center">১. প্রিলিমিনারি</div>
+<div class="space-y-1.5 mt-1.5">
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">পরীক্ষার তারিখ</span>
+<strong id="cardPrelimDate" class="block text-[11px] text-slate-900">১০ এপ্রিল, ২৪</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">মোট MCQ</span>
+<strong id="cardPrelimMarks" class="block text-[11px] text-slate-900">১০০</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">কাটমার্ক</span>
+<strong id="cardPrelimCut" class="block text-[11px] text-amber-700 font-bold">৬৫</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">ফলাফলের তারিখ</span>
+<strong id="cardPrelimResultDate" class="block text-[11px] text-slate-900">০২ মে, ২৪</strong>
+</div>
+<div class="bg-white px-1 py-0.5 rounded border border-emerald-100">
+<span class="block text-[10px] text-slate-500 leading-tight">উত্তীর্ণ</span>
+<strong id="cardPrelimPassed" class="block text-[11px] text-emerald-700">৫,০০০ জন</strong>
+</div>
+</div>
+</div>
+<div class="mt-1.5 pt-1 border-t border-emerald-200">
+<span class="block text-[10px] text-slate-500 leading-tight">ফল প্রকাশের সময়</span>
+<strong id="prelimGapDays" class="block text-[11px] text-emerald-800">২২ দিন</strong>
+</div>
+</div>
+
+<!-- WRITTEN -->
+<div class="bg-sky-50/60 border border-sky-200 rounded-lg p-2 flex flex-col justify-between text-center">
+<div>
+<div class="text-[11px] font-bold text-sky-900 border-b border-sky-200 pb-1 text-center">২. লিখিত</div>
+<div class="space-y-1.5 mt-1.5">
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">পরীক্ষার তারিখ</span>
+<strong id="cardWrittenDate" class="block text-[11px] text-slate-900">২০ জুলাই, ২৪</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">মোট মার্ক</span>
+<strong id="cardWrittenMarks" class="block text-[11px] text-slate-900">২০০</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">কাটমার্ক</span>
+<strong id="cardWrittenCut" class="block text-[11px] text-sky-700 font-bold">১১৮</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">ফলাফলের তারিখ</span>
+<strong id="cardWrittenResultDate" class="block text-[11px] text-slate-900">১৫ অক্টো, ২৪</strong>
+</div>
+<div class="bg-white px-1 py-0.5 rounded border border-sky-100">
+<span class="block text-[10px] text-slate-500 leading-tight">উত্তীর্ণ</span>
+<strong id="cardWrittenPassed" class="block text-[11px] text-sky-700">৪৫০ জন</strong>
+</div>
+</div>
+</div>
+<div class="mt-1.5 pt-1 border-t border-sky-200">
+<span class="block text-[10px] text-slate-500 leading-tight">ফল প্রকাশের সময়</span>
+<strong id="writtenGapDays" class="block text-[11px] text-sky-800">৮৭ দিন</strong>
+</div>
+</div>
+
+<!-- VIVA -->
+<div class="bg-purple-50/60 border border-purple-200 rounded-lg p-2 flex flex-col justify-between text-center">
+<div>
+<div class="text-[11px] font-bold text-purple-900 border-b border-purple-200 pb-1 text-center">৩. ভাইভা</div>
+<div class="space-y-1.5 mt-1.5">
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">ভাইভা শুরু</span>
+<strong id="cardVivaStart" class="block text-[11px] text-slate-900">০১ নভে, ২৪</strong>
+</div>
+<div>
+<span class="block text-[10px] text-slate-500 leading-tight">ভাইভা শেষ</span>
+<strong id="cardVivaEnd" class="block text-[11px] text-slate-900">২০ নভে, ২৪</strong>
+</div>
+</div>
+</div>
+
+<div class="mt-2 pt-1 border-t border-purple-200 space-y-1">
+<div class="bg-white p-1 rounded border border-purple-100">
+<span class="block text-[10px] text-slate-500 leading-tight">আবেদন ➔ প্রিলি পাস</span>
+<strong id="prelimRatio" class="text-[11px] text-emerald-700 font-bold block">৩.৩৩% (১:৩০)</strong>
+</div>
+<div class="bg-white p-1 rounded border border-purple-100">
+<span class="block text-[10px] text-slate-500 leading-tight">প্রিলি ➔ লিখিত পাস</span>
+<strong id="writtenRatio" class="text-[11px] text-sky-700 font-bold block">৯.০০% (১:১১.১)</strong>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="border-t border-slate-300 pt-1.5 flex justify-between items-center text-[10px] text-slate-500">
+<span class="flex items-center gap-1 font-semibold text-slate-700">
+<i class="fa-solid fa-award text-amber-600"></i> জব এক্সাম অফিসিয়াল ডেটা রেকর্ড
+</span>
+<div>
+<span>পদ প্রতি লড়াই: <strong id="overallRatio" class="text-amber-700 font-bold">১,৫০০ জন</strong></span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="w-full max-w-[720px] grid grid-cols-2 gap-3">
+<button id="downloadPngBtn" onclick="downloadCard('png')" class="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm">
+<i class="fa-solid fa-image text-base"></i><span>ছবি (PNG) ডাউনলোড</span>
+</button>
+<button id="downloadPdfBtn" onclick="downloadCard('pdf')" class="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm">
+<i class="fa-solid fa-file-pdf text-base"></i><span>PDF ডাউনলোড</span>
+</button>
+</div>
+
+</div>
+</div>
+</main>
+
+<script>
+function toBengaliNumerals(num) {
+  if (num === null || num === undefined || num === '') return '';
+  const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+  return num.toString().replace(/[0-9]/g, (digit) => bnDigits[digit]);
+}
+
+function toEnglishNumerals(str) {
+  if (!str) return '';
+  const bnDigits = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};
+  return str.toString().replace(/[০-৯]/g, (w) => bnDigits[w]).replace(/,/g, '');
+}
+
+function formatBengaliDate(dateString) {
+  if (!dateString) return 'প্রযোজ্য নয়';
+  const months = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  const day = toBengaliNumerals(date.getDate());
+  const month = months[date.getMonth()];
+  const year = toBengaliNumerals(date.getFullYear().toString().slice(-2));
+  return `${day} ${month}, ${year}`;
+}
+
+function calculateDaysGap(startDateStr, endDateStr) {
+  if (!startDateStr || !endDateStr) return null;
+  const start = new Date(startDateStr);
+  const end = new Date(endDateStr);
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+  const diffDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return diffDays >= 0 ? diffDays : null;
+}
+
+function updateCardPreview() {
+  const positionName = document.getElementById('positionName').value || 'পদের নাম';
+  const ministryName = document.getElementById('ministryName').value || 'মন্ত্রণালয় / বিভাগ';
+  const vacanciesRaw = document.getElementById('vacancies').value || '০';
+  const applicantsRaw = document.getElementById('applicants').value || '০';
+  const circularDate = document.getElementById('circularDate').value;
+
+  const prelimDate = document.getElementById('prelimDate').value;
+  const prelimResultDate = document.getElementById('prelimResultDate').value;
+  const prelimMarks = document.getElementById('prelimMarks').value || '০';
+  const prelimCut = document.getElementById('prelimCut').value || '০';
+  const prelimPassedRaw = document.getElementById('prelimPassed').value || '০';
+
+  const writtenDate = document.getElementById('writtenDate').value;
+  const writtenResultDate = document.getElementById('writtenResultDate').value;
+  const writtenMarks = document.getElementById('writtenMarks').value || '০';
+  const writtenCut = document.getElementById('writtenCut').value || '০';
+  const writtenPassedRaw = document.getElementById('writtenPassed').value || '০';
+
+  const vivaStartDate = document.getElementById('vivaStartDate').value;
+  const vivaEndDate = document.getElementById('vivaEndDate').value;
+
+  const vacanciesNum = parseFloat(toEnglishNumerals(vacanciesRaw)) || 0;
+  const applicantsNum = parseFloat(toEnglishNumerals(applicantsRaw)) || 0;
+  const prelimPassedNum = parseFloat(toEnglishNumerals(prelimPassedRaw)) || 0;
+  const writtenPassedNum = parseFloat(toEnglishNumerals(writtenPassedRaw)) || 0;
+
+  document.getElementById('cardPositionTitle').innerText = positionName;
+  document.getElementById('cardMinistryBadge').innerText = ministryName;
+  document.getElementById('cardVacancies').innerText = `${toBengaliNumerals(vacanciesRaw)} টি`;
+  document.getElementById('cardApplicants').innerText = `${toBengaliNumerals(applicantsRaw)} জন`;
+  document.getElementById('cardCircularDate').innerText = formatBengaliDate(circularDate);
+
+  document.getElementById('cardPrelimDate').innerText = formatBengaliDate(prelimDate);
+  document.getElementById('cardPrelimResultDate').innerText = formatBengaliDate(prelimResultDate);
+  document.getElementById('cardPrelimMarks').innerText = toBengaliNumerals(prelimMarks);
+  document.getElementById('cardPrelimCut').innerText = toBengaliNumerals(prelimCut);
+  document.getElementById('cardPrelimPassed').innerText = `${toBengaliNumerals(prelimPassedRaw)} জন`;
+
+  document.getElementById('cardWrittenDate').innerText = formatBengaliDate(writtenDate);
+  document.getElementById('cardWrittenResultDate').innerText = formatBengaliDate(writtenResultDate);
+  document.getElementById('cardWrittenMarks').innerText = toBengaliNumerals(writtenMarks);
+  document.getElementById('cardWrittenCut').innerText = toBengaliNumerals(writtenCut);
+  document.getElementById('cardWrittenPassed').innerText = `${toBengaliNumerals(writtenPassedRaw)} জন`;
+
+  document.getElementById('cardVivaStart').innerText = formatBengaliDate(vivaStartDate);
+  document.getElementById('cardVivaEnd').innerText = formatBengaliDate(vivaEndDate);
+
+  const prelimGap = calculateDaysGap(prelimDate, prelimResultDate);
+  document.getElementById('prelimGapDays').innerText = prelimGap !== null ? `${toBengaliNumerals(prelimGap)} দিন` : 'তথ্য নেই';
+
+  const writtenGap = calculateDaysGap(writtenDate, writtenResultDate);
+  document.getElementById('writtenGapDays').innerText = writtenGap !== null ? `${toBengaliNumerals(writtenGap)} দিন` : 'তথ্য নেই';
+
+  if (applicantsNum > 0 && prelimPassedNum > 0) {
+    const percent = ((prelimPassedNum / applicantsNum) * 100).toFixed(2);
+    const ratioVal = (applicantsNum / prelimPassedNum).toFixed(1);
+    document.getElementById('prelimRatio').innerText = `${toBengaliNumerals(percent)}% (১:${toBengaliNumerals(ratioVal)})`;
+  } else {
+    document.getElementById('prelimRatio').innerText = 'অপ্রাপ্য';
+  }
+
+  if (prelimPassedNum > 0 && writtenPassedNum > 0) {
+    const percent = ((writtenPassedNum / prelimPassedNum) * 100).toFixed(2);
+    const ratioVal = (prelimPassedNum / writtenPassedNum).toFixed(1);
+    document.getElementById('writtenRatio').innerText = `${toBengaliNumerals(percent)}% (১:${toBengaliNumerals(ratioVal)})`;
+  } else {
+    document.getElementById('writtenRatio').innerText = 'অপ্রাপ্য';
+  }
+
+  if (vacanciesNum > 0 && applicantsNum > 0) {
+    const perPost = Math.round(applicantsNum / vacanciesNum);
+    document.getElementById('overallRatio').innerText = `${toBengaliNumerals(perPost.toLocaleString('en-US'))} জন`;
+  } else {
+    document.getElementById('overallRatio').innerText = 'অপ্রাপ্য';
+  }
+}
+
+function loadSampleData() {
+  document.getElementById('positionName').value = "সিনিয়র অফিসার (সাধারণ)";
+  document.getElementById('ministryName').value = "সমন্বিত ৮ ব্যাংক";
+  document.getElementById('vacancies').value = "৯২২";
+  document.getElementById('applicants').value = "২,৪০,০০০";
+  document.getElementById('circularDate').value = "2023-12-01";
+
+  document.getElementById('prelimDate').value = "2024-03-08";
+  document.getElementById('prelimResultDate').value = "2024-03-28";
+  document.getElementById('prelimMarks').value = "১০০";
+  document.getElementById('prelimCut').value = "৬২";
+  document.getElementById('prelimPassed').value = "৮,৫০০";
+
+  document.getElementById('writtenDate').value = "2024-06-14";
+  document.getElementById('writtenResultDate').value = "2024-09-05";
+  document.getElementById('writtenMarks').value = "২০০";
+  document.getElementById('writtenCut').value = "১০৫";
+  document.getElementById('writtenPassed').value = "২,১০০";
+
+  document.getElementById('vivaStartDate').value = "2024-10-01";
+  document.getElementById('vivaEndDate').value = "2024-10-25";
+
+  updateCardPreview();
+}
+
+function clearAll() {
+  document.querySelectorAll('#examForm input').forEach(i => { i.value = ''; });
+  updateCardPreview();
+}
+
+function updateThemeButtons() {
+  const light = document.documentElement.dataset.page === 'light';
+  const cardDark = document.getElementById('cardPreview').classList.contains('card-dark');
+  document.getElementById('pageThemeBtn').innerHTML = light
+    ? '<i class="fa-solid fa-sun mr-1"></i> পেজ: লাইট'
+    : '<i class="fa-solid fa-moon mr-1"></i> পেজ: ডার্ক';
+  document.getElementById('cardThemeBtn').innerHTML = cardDark
+    ? '<i class="fa-solid fa-moon mr-1"></i> কার্ড: ডার্ক'
+    : '<i class="fa-solid fa-sun mr-1"></i> কার্ড: লাইট';
+}
+
+function togglePageTheme() {
+  const h = document.documentElement;
+  h.dataset.page = h.dataset.page === 'light' ? 'dark' : 'light';
+  updateThemeButtons();
+}
+
+function toggleCardTheme() {
+  document.getElementById('cardPreview').classList.toggle('card-dark');
+  updateThemeButtons();
+}
+
+function renderCard() {
+  const card = document.getElementById('cardPreview');
+  const isDark = card.classList.contains('card-dark');
+  return html2canvas(card, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    logging: false,
+    windowWidth: 1280,
+    onclone: (doc) => {
+      const c = doc.getElementById('cardPreview');
+      c.style.width = '720px';
+      c.style.maxWidth = '720px';
+      c.style.boxShadow = 'none';
+      c.parentElement.style.overflow = 'visible';
+    }
+  });
+}
+
+function downloadCard(type) {
+  const btns = [document.getElementById('downloadPngBtn'), document.getElementById('downloadPdfBtn')];
+  const saved = btns.map(b => b.innerHTML);
+  btns.forEach(b => { b.disabled = true; });
+  const active = btns[type === 'pdf' ? 1 : 0];
+  active.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>তৈরি হচ্ছে...</span>';
+
+  renderCard().then(canvas => {
+    const position = (document.getElementById('positionName').value || 'Job_Exam').trim().replace(/\s+/g, '_');
+    if (type === 'pdf') {
+      const { jsPDF } = window.jspdf;
+      const w = 720;
+      const h = Math.round(w * canvas.height / canvas.width);
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [w, h], hotfixes: ['px_scaling'] });
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
+      pdf.save(`Job_Exam_Certificate_Card_${position}.pdf`);
+    } else {
+      const link = document.createElement('a');
+      link.download = `Job_Exam_Certificate_Card_${position}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  }).catch(err => {
+    console.error('Error generating file:', err);
+  }).finally(() => {
+    btns.forEach((b, i) => { b.innerHTML = saved[i]; b.disabled = false; });
+  });
+}
+
+window.onload = function() {
+  const inputs = document.querySelectorAll('#examForm input');
+  inputs.forEach(input => {
+    input.addEventListener('input', updateCardPreview);
+    input.addEventListener('change', updateCardPreview);
+  });
+  updateCardPreview();
+  updateThemeButtons();
+};
+</script>
+</body>
+</html>
